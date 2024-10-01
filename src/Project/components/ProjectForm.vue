@@ -4,12 +4,9 @@ import Project from "@/Project/models/project";
 import { useStore } from "@/store";
 import { cloneObject } from "@/common/utils/object-utils";
 import { useRouter } from "vue-router";
-import {
-  ADD_PROJECT,
-  UPDATE_PROJECT,
-} from "@/store/mutations";
+import { ADD_PROJECT, UPDATE_PROJECT } from "@/store/mutations";
 import { NotificationType } from "@/Notifications/models/notification";
-import useNotifier from '@/common/hooks/notifier';
+import useNotifier from "@/common/hooks/notifier";
 
 const router = useRouter();
 

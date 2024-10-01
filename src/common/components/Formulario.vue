@@ -79,7 +79,7 @@ export default defineComponent({
     return {
       projects: computed(() => store.state.projects),
       store,
-      notifier
+      notifier,
     };
   },
 });
