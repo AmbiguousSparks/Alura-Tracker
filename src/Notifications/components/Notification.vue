@@ -8,7 +8,9 @@ import classes, {
 
 const store = useStore();
 
-const notifications: Notification[] = computed(() => store.state.notifications);
+const notifications: Notification[] = computed(
+  () => store.state.notificationsModule.notifications,
+);
 
 const getTypeClass = (type: NotificationType) => classes[type];
 </script>

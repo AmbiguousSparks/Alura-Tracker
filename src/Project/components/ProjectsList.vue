@@ -1,15 +1,14 @@
 <script setup lang="ts">
-import { computed, onBeforeMount, Ref, ref } from "vue";
-import { ApplicationState, useStore } from "@/store";
-import { Store } from "vuex";
-import { DELETE_PROJECT } from "@/store/mutations";
+import { computed, onMounted } from "vue";
+import { useStore } from "@/store";
+import { ProjectActions } from "@/store/actions";
 
-const store: Ref<Store<ApplicationState>> = ref();
+const store = useStore();
 
-const projects = computed(() => store.value?.state.projects);
+const projects = computed(() => store.state.projectsModule.projects);
 
-onBeforeMount(() => {
-  store.value = useStore();
+onMounted(async () => {
+  await store.dispatch(ProjectActions.GET_PROJECTS);
 });
 </script>
 
@@ -42,7 +41,7 @@ onBeforeMount(() => {
             </RouterLink>
             <button
               class="button is-danger"
-              @click="store.commit(DELETE_PROJECT, p.id)"
+              @click="store.dispatch(ProjectActions.DELETE_PROJECT, p.id)"
             >
               <i class="fas fa-trash"></i>
             </button>

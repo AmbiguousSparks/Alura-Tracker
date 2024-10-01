@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, Ref, ref, defineProps } from "vue";
+import { defineProps, onMounted, ref, Ref } from "vue";
 import Project from "@/Project/models/project";
 import { useStore } from "@/store";
 import { cloneObject } from "@/common/utils/object-utils";
 import { useRouter } from "vue-router";
-import { ADD_PROJECT, UPDATE_PROJECT } from "@/store/mutations";
 import { NotificationType } from "@/Notifications/models/notification";
 import useNotifier from "@/common/hooks/notifier";
+import { ProjectActions } from "@/store/actions";
 
 const router = useRouter();
 
@@ -27,24 +27,35 @@ onMounted(() => {
   }
 });
 
-const createProject = () => {
+const createProject = async () => {
   project.value.id = new Date().toISOString();
 
-  store.commit(ADD_PROJECT, cloneObject(project.value));
+  try {
+    await store.dispatch(
+      ProjectActions.CREATE_PROJECT,
+      cloneObject(project.value),
+    );
 
-  notifier.notify({
-    title: "Sucesso",
-    message: `Projeto ${project.value.name} criado com sucesso`,
-    type: NotificationType.Success,
-  });
+    notifier.notify({
+      title: "Sucesso",
+      message: `Projeto ${project.value.name} criado com sucesso`,
+      type: NotificationType.Success,
+    });
 
-  router.push("/Projects");
+    await router.push("/Projects");
 
-  project.value = {};
+    project.value = {};
+  } catch {
+    notifier.notify({
+      title: "Erro",
+      message: `Houve um erro ao tentar cadastrar o projeto ${project.value.name}, tente novamente mais tarde`,
+      type: NotificationType.Danger,
+    });
+  }
 };
 
-const editProject = () => {
-  store.commit(UPDATE_PROJECT, {
+const editProject = async () => {
+  await store.dispatch(ProjectActions.UPDATE_PROJECT, {
     id: props.id,
     project: cloneObject(project.value),
   });
@@ -57,7 +68,7 @@ const editProject = () => {
 
   project.value = {};
 
-  router.push("/Projects");
+  await router.push("/Projects");
 };
 
 const save = () => {
